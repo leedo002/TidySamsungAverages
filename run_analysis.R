@@ -61,23 +61,23 @@ setwd("C:/Users/leedo002/Documents/Education/Data Science by JHU/Course 3 - Gett
 ## only the columns needed.
 #################################################################################################################
 
-##  rename training and test variables based on features.txt
+#  rename training and test variables based on features.txt
   featurenames<- features$featurename
   names(training) <- featurenames
   names(test)<-featurenames
 
-## merge training, training_labels, subject_train, and activity_labels to add new columns called activityname
-##   and subjectid
+# merge training, training_labels, subject_train, and activity_labels to add new columns called activityname
+#   and subjectid
   training_ext<-training %>% mutate(activityid=training_labels$V1, subjectid=subject_train$subjectid) %>% join(activity_labels, type="inner",by="activityid")
 
-## merge test, test_labels, subject_test, and activity_labels to add new columns called activityname
-##   and subjectid
+# merge test, test_labels, subject_test, and activity_labels to add new columns called activityname
+#   and subjectid
   test_ext<-test %>% mutate(activityid=test_labels$V1, subjectid=subject_test$subjectid) %>% join(activity_labels, type="inner",by="activityid")
 
-## union training and test into one data frame called completeSet
+# union training and test into one data frame called completeSet
   completeSet<-rbind(training_ext, test_ext)
 
-## subset completeSet to only the needed columns 
+# subset completeSet to only the needed columns 
 ## NOTE: I have decided that only the mean() and std() variables are to be used 
   completeSetTb <- tbl_df(completeSet)
   subsetSet<-cbind(select(completeSetTb,activityname,subjectid),select(completeSetTb,ends_with("mean()")),select(completeSetTb,ends_with("std()")))
@@ -88,7 +88,7 @@ setwd("C:/Users/leedo002/Documents/Education/Data Science by JHU/Course 3 - Gett
   names(subsetSet)<-gsub("-","",names(subsetSet))         # remove hyphens
   names(subsetSet)<-sub("std$","stddev",names(subsetSet)) # change "std" to "stddev" as "std" is common abbreviation for "standard"
   
-## create a second data set with average of each variable for each activityname and subjectid
+# create a second data set with average of each variable for each activityname and subjectid
   secondSubsetSet <- arrange(subsetSet,activityname,subjectid)
   secondSubsetSet <- ddply(secondSubsetSet,c("activityname","subjectid"),summarise
                            , mean(tbodyaccmagmean   )        
